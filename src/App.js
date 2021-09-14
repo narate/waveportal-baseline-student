@@ -45,6 +45,7 @@ export default function App() {
       .then(accounts => {
         console.log("Connected", accounts[0]);
         setCurrentAccount(accounts[0]);
+        getAllWaves();
       })
       .catch(err => console.log(err));
   }
@@ -57,7 +58,7 @@ export default function App() {
     let count = await waveportalContract.getTotalWaves()
     console.log("Retrived total wave count...", count.toNumber())
 
-    if(message.length === 0) {
+    if (message.length === 0) {
       alert("Message empty~~");
       return
     }
@@ -81,7 +82,7 @@ export default function App() {
     let waves = await waveportalContract.getAllWaves();
 
     let count = await waveportalContract.getTotalWaves();
-  
+
     setWaves(count.toNumber());
 
     let wavesCleaned = [];
@@ -121,22 +122,35 @@ export default function App() {
           Wave at Me 👋
         </button>
 
-        {currentAccount ? null : (
-          <button className="waveButton" onClick={connectWallet}>
-            Connect Wallet 🔗
-          </button>
-        )}
-        <hr />
-        <strong>Wave messages</strong>
-        {allWaves.map((wave, index) => {
-          return (
-            <div style={{background: "OldLance", marginTop: "16px", padding: "8px"}}>
-              <div><b>Address:</b> <a href={"https://rinkeby.etherscan.io/address/" + wave.address} target="_blank">{wave.address}</a></div>
-              <div><b>Time:</b> {wave.timestamp.toString()}</div>
-              <div><b>Message:</b> {wave.message}</div>
+        {/*condition ? true : false. */}
+
+        {currentAccount
+          ? null
+          : (
+            <button className="waveButton" onClick={connectWallet}>
+              Connect Wallet 🔗
+            </button>
+          )}
+
+        {allWaves.length > 0
+          ? (
+            <div>
+              <hr />
+              <strong>Wave messages</strong>
+              {allWaves.map((wave, index) => {
+                return (
+                  <div style={{ background: "OldLance", marginTop: "16px", padding: "8px" }}>
+                    <div><b>Address:</b> <a href={"https://rinkeby.etherscan.io/address/" + wave.address} target="_blank">{wave.address}</a></div>
+                    <div><b>Time:</b> {wave.timestamp.toString()}</div>
+                    <div><b>Message:</b> {wave.message}</div>
+                  </div>
+                )
+              })}
             </div>
           )
-        })}
+          : null
+        }
+
       </div>
     </div >
   );
