@@ -5,7 +5,7 @@ import abi from './utils/WavePortal.json';
 
 export default function App() {
   const [currentAccount, setCurrentAccount] = React.useState("");
-  const contractAddress = '0x55E6adA98F447753Ead9a12A4Ece97f8F0CE4bf6';
+  const contractAddress = '0x2166885d68A35df3acb15edad6e9735943eb1bE5';
   const contractABI = abi.abi;
 
   const [allWaves, setAllWaves] = React.useState([]);
@@ -114,18 +114,24 @@ export default function App() {
         <div className="bio">
           Narate, from Thailand 🇹🇭
         </div>
-        <div className="bio">
-          <h1>Total waves {waves}</h1>
-        </div>
-        <input type="text" className="message" id="message" placeholder="Add message here..." onChange={event => setMessage(event.target.value)} />
-        <button className="waveButton" onClick={wave}>
-          Wave at Me 👋
-        </button>
 
         {/*condition ? true : false. */}
 
         {currentAccount
-          ? null
+          ? (
+            <>
+              <div className="bio">
+                <h1>Total waves {waves}</h1>
+              </div>
+              <div className="bio">
+                <input type="text" className="message" id="message" placeholder="Add message here..." onChange={event => setMessage(event.target.value)} />
+                <br />
+                <button className="waveButton" onClick={wave}>
+                  Wave at Me 👋
+                </button>
+              </div>
+            </>
+          )
           : (
             <button className="waveButton" onClick={connectWallet}>
               Connect Wallet 🔗
