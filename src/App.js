@@ -114,18 +114,24 @@ export default function App() {
         <div className="bio">
           Narate, from Thailand 🇹🇭
         </div>
-        <div className="bio">
-          <h1>Total waves {waves}</h1>
-        </div>
-        <input type="text" className="message" id="message" placeholder="Add message here..." onChange={event => setMessage(event.target.value)} />
-        <button className="waveButton" onClick={wave}>
-          Wave at Me 👋
-        </button>
 
         {/*condition ? true : false. */}
 
         {currentAccount
-          ? null
+          ? (
+            <>
+              <div className="bio">
+                <h1>Total waves {waves}</h1>
+              </div>
+              <div className="bio">
+                <input type="text" className="message" id="message" placeholder="Add message here..." onChange={event => setMessage(event.target.value)} />
+                <br />
+                <button className="waveButton" onClick={wave}>
+                  Wave at Me 👋
+                </button>
+              </div>
+            </>
+          )
           : (
             <button className="waveButton" onClick={connectWallet}>
               Connect Wallet 🔗
