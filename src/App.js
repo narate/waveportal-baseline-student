@@ -8,7 +8,7 @@ export default function App() {
 
   const checkIfWalletIsConnected = () => {
     const { ethereum } = window;
-    if(!ethereum) {
+    if (!ethereum) {
       console.log("Make sure you have metamask!")
       return
     } else {
@@ -27,13 +27,28 @@ export default function App() {
       })
   }
 
+  const connectWallet = () => {
+    const { ethereum } = window;
+    if (!ethereum) {
+      alert("Get metamask!")
+      return
+    }
+
+    ethereum.request({ method: 'eth_requestAccounts' })
+      .then(accounts => {
+        console.log("Connected", accounts[0])
+        setCurrentAccount(accounts[0])
+      })
+      .catch(err => console.log(err));
+  }
+
   React.useEffect(() => {
     checkIfWalletIsConnected()
   }, [])
 
   const wave = () => {
   }
-  
+
   return (
     <div className="mainContainer">
 
@@ -43,12 +58,18 @@ export default function App() {
         </div>
 
         <div className="bio">
-          Narate,from Thailand. 
+          Narate,from Thailand.
         </div>
 
-        <button className="waveButton" onClick={wave}>
+        <button className="waveButton" onClick={null}>
           Wave at Me
         </button>
+
+        {currentAccount ? null : (
+          <button className="waveButton" onClick={connectWallet}>
+            Connect Wallet
+          </button>
+        )}
       </div>
     </div>
   );
