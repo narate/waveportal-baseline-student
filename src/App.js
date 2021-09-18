@@ -1,11 +1,16 @@
 import * as React from "react";
 import { ethers } from "ethers";
+import {
+  serializeError
+} from 'eth-rpc-errors';
+
 import './App.css';
 import abi from './utils/WavePortal.json';
 
 export default function App() {
+
   const [currentAccount, setCurrentAccount] = React.useState("");
-  const contractAddress = '0x2166885d68A35df3acb15edad6e9735943eb1bE5';
+  const contractAddress = '0x4ed3d5b5463433577d96f7c1aF116374BaD8E054';
   const contractABI = abi.abi;
 
   const [allWaves, setAllWaves] = React.useState([]);
@@ -47,7 +52,7 @@ export default function App() {
         setCurrentAccount(accounts[0]);
         getAllWaves();
       })
-      .catch(err => console.log(err));
+      .catch(err => console.log('eth_requestAccounts', err));
   }
 
   const wave = async () => {
@@ -62,11 +67,20 @@ export default function App() {
       alert("Message empty~~");
       return
     }
-    const waveTxn = await waveportalContract.wave(message);
-    console.log("Mining...", waveTxn.hash)
-    await waveTxn.wait()
-    console.log("Mined -- ", waveTxn.hash)
 
+    try {
+      const waveTxn = await waveportalContract.wave(message);
+      console.log("Mining...", waveTxn.hash)
+      await waveTxn.wait()
+      console.log("Mined -- ", waveTxn.hash)
+    } catch(err) {
+      const res = serializeError(err);
+      if (typeof res.data != "undefined") {
+        alert(res.data.originalError.error.message);
+        return
+      }
+    }
+    
     count = await waveportalContract.getTotalWaves();
     console.log("Retrived total wave count...", count.toNumber())
     setWaves(count.toNumber())
@@ -99,20 +113,18 @@ export default function App() {
     console.log(wavesCleaned);
   }
 
-  React.useEffect(() => {
-    checkIfWalletIsConnected()
-  }, [])
+  React.useEffect(checkIfWalletIsConnected, [])
 
   return (
     <div className="mainContainer">
 
       <div className="dataContainer">
         <div className="header">
-          👋 Hey there!
+          <span role="img" aria-label="wave">👋</span> Hey there!
         </div>
 
         <div className="bio">
-          Narate, from Thailand 🇹🇭
+          Narate, from Thailand <span role="img" aria-label="thailand-flag">🇹🇭</span>
         </div>
 
         {/*condition ? true : false. */}
@@ -127,14 +139,14 @@ export default function App() {
                 <input type="text" className="message" id="message" placeholder="Add message here..." onChange={event => setMessage(event.target.value)} />
                 <br />
                 <button className="waveButton" onClick={wave}>
-                  Wave at Me 👋
+                  Wave at Me <span role="img" aria-label="wave">👋</span>
                 </button>
               </div>
             </>
           )
           : (
             <button className="waveButton" onClick={connectWallet}>
-              Connect Wallet 🔗
+              Connect Wallet <span role="img" aria-label="chain">🔗</span>
             </button>
           )}
 
@@ -145,8 +157,8 @@ export default function App() {
               <strong>Wave messages</strong>
               {allWaves.map((wave, index) => {
                 return (
-                  <div style={{ background: "OldLance", marginTop: "16px", padding: "8px" }}>
-                    <div><b>Address:</b> <a href={"https://rinkeby.etherscan.io/address/" + wave.address} target="_blank">{wave.address}</a></div>
+                  <div style={{ background: "OldLance", marginTop: "16px", padding: "8px" }} key={index}>
+                    <div><b>Address:</b> <a href={"https://rinkeby.etherscan.io/address/" + wave.address} target="_blank" rel="noopener noreferrer">{wave.address}</a></div>
                     <div><b>Time:</b> {wave.timestamp.toString()}</div>
                     <div><b>Message:</b> {wave.message}</div>
                   </div>
