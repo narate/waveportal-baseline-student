@@ -1,8 +1,9 @@
 import * as React from "react";
 import { ethers } from "ethers";
-import {
-  serializeError
-} from 'eth-rpc-errors';
+
+// import {
+//   serializeError
+// } from 'eth-rpc-errors';
 
 import './App.css';
 import abi from './utils/WavePortal.json';
