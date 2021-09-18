@@ -57,7 +57,7 @@
   grid-gap: 1.5em;
   grid-template-columns: repeat(3, 15em);
   grid-template-rows: auto auto auto;
-  grid-auto-flow: column;
+  grid-auto-flow: row;
 }
 
 .date {

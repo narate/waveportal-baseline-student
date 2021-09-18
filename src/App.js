@@ -69,25 +69,21 @@ export default function App() {
     }
 
     try {
-      const waveTxn = await waveportalContract.wave(message, {
-        gasLimit: 300000
-      });
+      const waveTxn = await waveportalContract.wave(message);
       console.log("Mining...", waveTxn.hash)
       await waveTxn.wait()
       console.log("Mined -- ", waveTxn.hash)
     } catch(err) {
-      const res = serializeError(err);
-      if (typeof res.data != "undefined") {
-        alert(res.data.originalError.error.message);
-        return
-      }
+      // const res = serializeError(err);
+      console.error(err);
+      alert("Unable to wave 🥺, plese try again.");
+      return
     }
     
     count = await waveportalContract.getTotalWaves();
     console.log("Retrived total wave count...", count.toNumber())
     setWaves(count.toNumber())
     document.getElementById('message').value = '';
-    getAllWaves();
   }
 
   async function getAllWaves() {
@@ -166,7 +162,7 @@ export default function App() {
             <div className="wrapper">
               {allWaves.map((wave, index) => {
                 return (
-                  <div className="box" >
+                  <div className="box" key={index}>
                     <h4>"{wave.message.substr(0,60)}"</h4>
                         <p>From {wave.address.substr(0, 6) + "..." + wave.address.substr(-4)}</p> 
                         <p className="date"><span role="img" aria-label="wave">👋</span>  on {
