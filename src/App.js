@@ -69,7 +69,9 @@ export default function App() {
     }
 
     try {
-      const waveTxn = await waveportalContract.wave(message);
+      const waveTxn = await waveportalContract.wave(message, {
+        gasLimit: 300000
+      });
       console.log("Mining...", waveTxn.hash)
       await waveTxn.wait()
       console.log("Mined -- ", waveTxn.hash)
@@ -111,14 +113,23 @@ export default function App() {
     setAllWaves(wavesCleaned);
     console.log('Initial value..., total waves = ' + count.toNumber());
     console.log(wavesCleaned);
+
+    waveportalContract.on("NewWave", (from, timestamp, message) => {
+      console.log("NewWave", from, timestamp, message)
+      setAllWaves(oldArray => [...oldArray, {
+        address: from,
+        timestamp: new Date(timestamp * 1000),
+        message: message
+      }])
+    })
   }
 
   React.useEffect(checkIfWalletIsConnected, [])
 
   return (
     <div className="mainContainer">
-
       <div className="dataContainer">
+
         <div className="header">
           <span role="img" aria-label="wave">👋</span> Hey there!
         </div>
@@ -149,18 +160,18 @@ export default function App() {
               Connect Wallet <span role="img" aria-label="chain">🔗</span>
             </button>
           )}
-
+        <hr />
         {allWaves.length > 0
           ? (
-            <div>
-              <hr />
-              <strong>Wave messages</strong>
+            <div className="wrapper">
               {allWaves.map((wave, index) => {
                 return (
-                  <div style={{ background: "OldLance", marginTop: "16px", padding: "8px" }} key={index}>
-                    <div><b>Address:</b> <a href={"https://rinkeby.etherscan.io/address/" + wave.address} target="_blank" rel="noopener noreferrer">{wave.address}</a></div>
-                    <div><b>Time:</b> {wave.timestamp.toString()}</div>
-                    <div><b>Message:</b> {wave.message}</div>
+                  <div className="box" >
+                    <h4>"{wave.message.substr(0,60)}"</h4>
+                        <p>From {wave.address.substr(0, 6) + "..." + wave.address.substr(-4)}</p> 
+                        <p className="date"><span role="img" aria-label="wave">👋</span>  on {
+                          new Date(wave.timestamp).toLocaleString()
+                        }</p>
                   </div>
                 )
               })}
@@ -168,7 +179,7 @@ export default function App() {
           )
           : null
         }
-
+      <hr />
       </div>
     </div >
   );

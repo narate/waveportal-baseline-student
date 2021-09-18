@@ -9,7 +9,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  max-width: 600px;
+  max-width: 900px;
 }
 
 .header {
@@ -30,10 +30,36 @@
   padding: 10px 50px;
   border: 0;
   border-radius: 5px;
-  
+
 }
 
 .message {
   box-sizing: border-box;
   padding: 10px 20px;
+}
+
+.box {
+  background-color: #444;
+  color: #fff;
+  border-radius: 0.75em;
+  padding: 1.5em;
+  overflow-wrap: break-word;
+}
+
+.box:nth-child(even) {
+  background-color: #ccc;
+  color: #000;
+}
+
+.wrapper {
+  /* width: 600px; */
+  display: grid;
+  grid-gap: 1.5em;
+  grid-template-columns: repeat(3, 15em);
+  grid-template-rows: auto auto auto;
+  grid-auto-flow: column;
+}
+
+.date {
+  font-size: small;
 }
